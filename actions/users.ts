@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { and, eq, getTableColumns, ne } from "drizzle-orm";
+import { and, eq, getTableColumns, isNull, ne } from "drizzle-orm";
 import { refresh } from "next/cache";
 import { db } from "@/drizzle/db";
 import { usersTable } from "@/drizzle/schema";
@@ -34,7 +34,7 @@ async function findUser(id: number): Promise<User | undefined> {
   const rows = await db
     .select(userColumns)
     .from(usersTable)
-    .where(eq(usersTable.id, id))
+    .where(and(eq(usersTable.id, id), isNull(usersTable.deletedAt)))
     .limit(1);
 
   return rows[0];
@@ -126,7 +126,7 @@ export async function updateUser(
       role: auth.role === Role.ADMIN ? role : user.role,
       ...(password ? { password: await bcrypt.hash(password, 10) } : {}),
     })
-    .where(eq(usersTable.id, id))
+    .where(and(eq(usersTable.id, id), isNull(usersTable.deletedAt)))
     .returning({ id: usersTable.id });
 
   if (updated.length === 0) {
@@ -153,7 +153,10 @@ export async function deleteUser(
 
   UserPolicy.destroy(auth, user);
 
-  await db.delete(usersTable).where(eq(usersTable.id, id));
+  await db
+    .update(usersTable)
+    .set({ deletedAt: new Date() })
+    .where(and(eq(usersTable.id, id), isNull(usersTable.deletedAt)));
 
   refresh();
   return { success: true };

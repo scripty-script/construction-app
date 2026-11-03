@@ -10,7 +10,7 @@ import { db } from "@/drizzle/db";
 import { usersTable } from "@/drizzle/schema";
 import { createSession, deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 export async function login(prevState: any, formData: FormData) {
   const validation = LoginFormSchema.safeParse(Object.fromEntries(formData));
@@ -27,7 +27,7 @@ export async function login(prevState: any, formData: FormData) {
   const data = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.email, email))
+    .where(and(eq(usersTable.email, email), isNull(usersTable.deletedAt)))
     .limit(1);
 
   const user = data[0];

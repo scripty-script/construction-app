@@ -7,7 +7,7 @@ import { decrypt } from "@/lib/session";
 import { toNumber } from "es-toolkit/compat";
 import { db } from "@/drizzle/db";
 import { usersTable } from "@/drizzle/schema";
-import { eq, getTableColumns } from "drizzle-orm";
+import { and, eq, getTableColumns, isNull } from "drizzle-orm";
 import type { User } from "@/lib/types";
 
 // Every column except the password hash, so the result matches `User`.
@@ -25,7 +25,12 @@ export const authenticated = cache(async (): Promise<User> => {
   const data = await db
     .select(userColumns)
     .from(usersTable)
-    .where(eq(usersTable.id, toNumber(session.userId)))
+    .where(
+      and(
+        eq(usersTable.id, toNumber(session.userId)),
+        isNull(usersTable.deletedAt),
+      ),
+    )
     .limit(1);
 
   const user = data[0];

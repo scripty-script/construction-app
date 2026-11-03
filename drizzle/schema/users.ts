@@ -11,4 +11,5 @@ export const usersTable = pgTable("users", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdate(() => new Date()),
+  deletedAt: timestamp("deleted_at"),
 });

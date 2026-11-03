@@ -1,6 +1,14 @@
 import "server-only";
 
-import { asc, count, desc, getTableColumns, ilike, or } from "drizzle-orm";
+import {
+  and,
+  count,
+  desc,
+  getTableColumns,
+  ilike,
+  isNull,
+  or,
+} from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { usersTable } from "@/drizzle/schema";
 import { authenticated } from "@/lib/dal";
@@ -16,9 +24,12 @@ export async function getUsers({ query = "", page = 1 }) {
 
   // Escape LIKE wildcards so the search text is matched literally.
   const pattern = `%${query.trim().replace(/[\\%_]/g, "\\$&")}%`;
-  const where = query.trim()
-    ? or(ilike(usersTable.name, pattern), ilike(usersTable.email, pattern))
-    : undefined;
+  const where = and(
+    isNull(usersTable.deletedAt),
+    query.trim()
+      ? or(ilike(usersTable.name, pattern), ilike(usersTable.email, pattern))
+      : undefined,
+  );
 
   const [{ total }] = await db
     .select({ total: count() })
