@@ -4,6 +4,7 @@ import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
+import type { User } from "@/lib/types";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
@@ -19,15 +20,11 @@ import {
   TerminalIcon,
   TerminalSquareIcon,
   GaugeIcon,
+  UserRoundGroupIcon,
 } from "lucide-react";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "Acme Inc",
@@ -56,10 +53,18 @@ const data = {
       url: "/projects",
       icon: <TerminalSquareIcon />,
     },
+    {
+      title: "Teams",
+      url: "/teams",
+      icon: <UserRoundGroupIcon />,
+    },
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { user: User }) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -69,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

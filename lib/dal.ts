@@ -3,13 +3,18 @@ import "server-only";
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { decrypt, deleteSession } from "@/lib/session";
+import { decrypt } from "@/lib/session";
 import { toNumber } from "es-toolkit/compat";
 import { db } from "@/drizzle/db";
 import { usersTable } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { eq, getTableColumns } from "drizzle-orm";
+import type { User } from "@/lib/types";
 
-export const authenticated = cache(async () => {
+// Every column except the password hash, so the result matches `User`.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { password, ...userColumns } = getTableColumns(usersTable);
+
+export const authenticated = cache(async (): Promise<User> => {
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
 
@@ -18,11 +23,7 @@ export const authenticated = cache(async () => {
   }
 
   const data = await db
-    .select({
-      id: usersTable.id,
-      email: usersTable.email,
-      name: usersTable.name,
-    })
+    .select(userColumns)
     .from(usersTable)
     .where(eq(usersTable.id, toNumber(session.userId)))
     .limit(1);
@@ -30,9 +31,8 @@ export const authenticated = cache(async () => {
   const user = data[0];
 
   if (!user) {
-    await deleteSession();
-
-    redirect("/login");
+    // Can't delete cookies while rendering; let the Route Handler do it.
+    redirect("/session/invalidate");
   }
 
   return user;
