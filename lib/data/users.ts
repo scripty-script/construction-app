@@ -7,11 +7,13 @@ import {
   getTableColumns,
   ilike,
   isNull,
+  ne,
   or,
 } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { usersTable } from "@/drizzle/schema";
 import { authenticated } from "@/lib/dal";
+import { Role } from "@/lib/enums";
 
 // Every column except the password hash, so the result matches `User`.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,6 +28,7 @@ export async function getUsers({ query = "", page = 1 }) {
   const pattern = `%${query.trim().replace(/[\\%_]/g, "\\$&")}%`;
   const where = and(
     isNull(usersTable.deletedAt),
+    ne(usersTable.role, Role.HOMEOWNER),
     query.trim()
       ? or(ilike(usersTable.name, pattern), ilike(usersTable.email, pattern))
       : undefined,

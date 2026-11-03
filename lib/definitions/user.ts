@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { Role } from "@/lib/enums";
+import { teamRoles } from "@/lib/enums";
 
 const name = z
   .string()
@@ -8,7 +8,7 @@ const name = z
 
 const email = z.email({ error: "Please enter a valid email." }).trim();
 
-const role = z.enum(Role, { error: "Please select a valid role." });
+const role = z.enum(teamRoles, { error: "Please select a valid role." });
 
 const password = z
   .string()

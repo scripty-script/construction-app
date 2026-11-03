@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { UserFormState } from "@/lib/definitions";
-import { Role, roleLabels } from "@/lib/enums";
+import { Role, teamRoleLabels, teamRoles } from "@/lib/enums";
 import type { User } from "@/lib/types";
 
 type UserFormDialogProps = {
@@ -113,17 +113,17 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
               <Select
                 id="role"
                 name="role"
-                items={roleLabels}
-                defaultValue={values.role ?? Role.HOMEOWNER}
+                items={teamRoleLabels}
+                defaultValue={values.role ?? Role.PROJECT_MANAGER}
                 required
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.values(Role).map((role) => (
+                  {teamRoles.map((role) => (
                     <SelectItem key={role} value={role}>
-                      {roleLabels[role]}
+                      {teamRoleLabels[role]}
                     </SelectItem>
                   ))}
                 </SelectContent>
