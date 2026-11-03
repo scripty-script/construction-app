@@ -1,0 +1,233 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "cad5ee3f-f78a-4dc0-8062-0c67f511acf1",
+  "prevIds": [
+    "c96813a0-1d54-42bc-9bf2-4a03f5fda7aa"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "project_users"
+      ],
+      "writes": [
+        "s|tbl|public.project_users",
+        "n|tbl|public.project_users",
+        "e|tbl|public.project_users",
+        "n|rel|public.project_users",
+        "n|type|public.project_users",
+        "n|rel|public.project_users_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "project_users",
+        "project_users_user_id_index"
+      ],
+      "writes": [
+        "s|idx|public.project_users_user_id_index",
+        "n|idx|public.project_users_user_id_index",
+        "e|idx|public.project_users_user_id_index",
+        "n|rel|public.project_users_user_id_index"
+      ],
+      "reads": [
+        "n|tbl|public.project_users",
+        "n|sch|public",
+        "n|col|public.project_users.user_id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "project_users"
+      ],
+      "writes": [
+        "s|fk|public.project_users.project_users_project_id_projects_id_fkey",
+        "n|fk|public.project_users.project_users_project_id_projects_id_fkey",
+        "e|fk|public.project_users.project_users_project_id_projects_id_fkey",
+        "n|con|public.project_users.project_users_project_id_projects_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.project_users",
+        "n|sch|public",
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|col|public.project_users.project_id",
+        "n|col|public.projects.id",
+        "e|uniqueness|public.projects.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "project_users"
+      ],
+      "writes": [
+        "s|fk|public.project_users.project_users_user_id_users_id_fkey",
+        "n|fk|public.project_users.project_users_user_id_users_id_fkey",
+        "e|fk|public.project_users.project_users_user_id_users_id_fkey",
+        "n|con|public.project_users.project_users_user_id_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.project_users",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.project_users.user_id",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "project_users",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "project_users",
+        "name": "project_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "project_users",
+        "name": "user_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "project_users",
+        "name": "created_at",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "project_users",
+        "name": "project_users_user_id_index",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "user_id",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "project_users",
+        "name": "project_users_project_id_projects_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "project_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "projects",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "project_users",
+        "name": "project_users_user_id_users_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "user_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "users",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "project_users",
+        "name": "project_users_pkey",
+        "columns": [
+          "project_id",
+          "user_id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    }
+  ]
+}
